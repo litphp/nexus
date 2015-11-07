@@ -1,0 +1,23 @@
+{
+    "name": "litphp/nexus",
+    "description": "misc interfaces, traits, and derived classes for lit components",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "McFog Wang",
+            "email": "mcfogw@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Lit\\Nexus\\": "src"
+        }
+    },
+    "require": {
+    =},
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.5.x-dev"
+        }
+    }
+}
