@@ -15,6 +15,9 @@
     },
     "require": {
     },
+    "suggest": {
+        "psr/cache-implementation": "convert cache instance to keyValue instance"
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "0.5.x-dev"
