@@ -12,6 +12,45 @@ trait DiContainerTrait
             throw new \RuntimeException("$className not found");
         }
 
+        $instance = $this->instantiate($className, $extraParameters);
+
+        /** @noinspection PhpParamsInspection */
+        $this[$className] = is_callable($instance) && is_callable([$this, 'protect'])
+            ? $this->protect($instance)
+            : $instance;
+
+        return $instance;
+    }
+
+    public function alias($className, $fieldName, array $extraParameters = [])
+    {
+        $this[$fieldName] = function () use ($className) {
+            return $this->produce($className);
+        };
+
+        return $this->provideParameter($className, $extraParameters);
+    }
+
+    public function provideParameter($className, array $extraParameters)
+    {
+        foreach ($extraParameters as $name => $value) {
+            if (isset($this["$className:$name"])) {
+                throw new \RuntimeException("cannot override $className:$name");
+            }
+
+            $this["$className:$name"] = $value;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param $className
+     * @param $extraParameters
+     * @return object
+     */
+    public function instantiate($className, $extraParameters)
+    {
         $class = new \ReflectionClass($className);
         $constructor = $class->getConstructor();
 
@@ -40,26 +79,14 @@ trait DiContainerTrait
             : [];
 
         $instance = $class->newInstanceArgs($constructParams);
-
-        /** @noinspection PhpParamsInspection */
-        $this[$className] = is_callable($instance) && is_callable([$this, 'protect'])
-            ? $this->protect($instance)
-            : $instance;
-
         return $instance;
     }
 
-    public function alias($className, $fieldName, array $extraParameters = [])
+    public function produceProxy($key)
     {
-        $this[$fieldName] = function () use ($className) {
-            return $this->produce($className);
+        return function () use ($key) {
+            return $this->produce($key);
         };
-
-        foreach ($extraParameters as $name => $value) {
-            $this["$className:$name"] = $value;
-        }
-
-        return $this;
     }
 
     protected function produceParam($className, \ReflectionParameter $parameter)
@@ -90,10 +117,6 @@ trait DiContainerTrait
             return $parameter->getDefaultValue();
         }
 
-        if ($parameter->allowsNull()) {
-            return null;
-        }
-
-        throw new \RuntimeException('failed to produce ' . $parameter);
+        throw new \RuntimeException(sprintf('failed to produce %s for %s', $parameter, $className));
     }
 }
