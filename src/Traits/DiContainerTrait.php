@@ -1,5 +1,11 @@
 <?php namespace Lit\Nexus\Traits;
 
+/**
+ * Class DiContainerTrait
+ * @package Lit\Nexus\Traits
+ *
+ * @method protect($callable)
+ */
 trait DiContainerTrait
 {
     public function produce($className, $extraParameters = [])
@@ -68,17 +74,18 @@ trait DiContainerTrait
         $constructParams = $constructor
             ? array_map(
                 function (\ReflectionParameter $parameter) use ($className, $extraParameters) {
-                    $parameterName = $parameter->getName();
+                    $parameterName = $parameter->name;
                     if (isset($extraParameters[$parameterName])) {
                         return $extraParameters[$parameterName];
                     }
 
                     try {
                         $parameterClass = $parameter->getClass();
-                        if ($parameterClass && isset($extraParameters[$parameterClass->getName()])) {
-                            return $extraParameters[$parameterClass->getName()];
+                        if ($parameterClass && isset($extraParameters[$parameterClass->name])) {
+                            return $extraParameters[$parameterClass->name];
                         }
                     } catch (\ReflectionException $e) {
+                        //ignore exception when $parameter is type hinting for interface
                     }
 
                     $idx = $parameter->getPosition();
@@ -105,7 +112,7 @@ trait DiContainerTrait
 
     protected function produceParam($className, \ReflectionParameter $parameter)
     {
-        $paramName = $parameter->getName();
+        $paramName = $parameter->name;
         if (isset($this["$className:$paramName"])) {
             return $this["$className:$paramName"];
         }
@@ -114,7 +121,7 @@ trait DiContainerTrait
         try {
             $paramClass = $parameter->getClass();
             if (!empty($paramClass)) {
-                $paramClassName = $paramClass->getName();
+                $paramClassName = $paramClass->name;
 
                 if (isset($this["$className:$paramClassName"])) {
                     return $this["$className:$paramClassName"];

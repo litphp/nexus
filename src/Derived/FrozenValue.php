@@ -28,7 +28,6 @@ class FrozenValue implements IReadableSingleValue
     }
 
     /**
-     * @param string $key
      * @return mixed
      */
     public function get()
@@ -37,7 +36,6 @@ class FrozenValue implements IReadableSingleValue
     }
 
     /**
-     * @param string $key
      * @return bool
      */
     public function exists()
@@ -45,4 +43,3 @@ class FrozenValue implements IReadableSingleValue
         return $this->value->exists();
     }
 }
- 
