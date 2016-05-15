@@ -113,13 +113,15 @@ trait DiContainerTrait
 
         try {
             $paramClass = $parameter->getClass();
-            $paramClassName = $paramClass->getName();
+            if (!empty($paramClass)) {
+                $paramClassName = $paramClass->getName();
 
-            if (isset($this["$className:$paramClassName"])) {
-                return $this["$className:$paramClassName"];
+                if (isset($this["$className:$paramClassName"])) {
+                    return $this["$className:$paramClassName"];
+                }
+
+                return $this->produce($paramClassName);
             }
-
-            return $this->produce($paramClassName);
         } catch (\ReflectionException $e) {
         }
 
