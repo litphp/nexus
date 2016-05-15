@@ -73,9 +73,12 @@ trait DiContainerTrait
                         return $extraParameters[$parameterName];
                     }
 
-                    $parameterClass = $parameter->getClass();
-                    if ($parameterClass && isset($extraParameters[$parameterClass->getName()])) {
-                        return $extraParameters[$parameterClass->getName()];
+                    try {
+                        $parameterClass = $parameter->getClass();
+                        if ($parameterClass && isset($extraParameters[$parameterClass->getName()])) {
+                            return $extraParameters[$parameterClass->getName()];
+                        }
+                    } catch (\ReflectionException $e) {
                     }
 
                     $idx = $parameter->getPosition();
@@ -102,15 +105,14 @@ trait DiContainerTrait
 
     protected function produceParam($className, \ReflectionParameter $parameter)
     {
-        $paramClass = $parameter->getClass();
         $paramName = $parameter->getName();
-        $idx = $parameter->getPosition();
-
         if (isset($this["$className:$paramName"])) {
             return $this["$className:$paramName"];
         }
 
-        if ($paramClass) {
+
+        try {
+            $paramClass = $parameter->getClass();
             $paramClassName = $paramClass->getName();
 
             if (isset($this["$className:$paramClassName"])) {
@@ -118,8 +120,10 @@ trait DiContainerTrait
             }
 
             return $this->produce($paramClassName);
+        } catch (\ReflectionException $e) {
         }
 
+        $idx = $parameter->getPosition();
         if (isset($this["$className:$idx"])) {
             return $this["$className:$idx"];
         }
