@@ -22,6 +22,12 @@ trait DiContainerTrait
         return $instance;
     }
 
+    /**
+     * @param string $className
+     * @param string $fieldName
+     * @param array $extraParameters
+     * @return $this
+     */
     public function alias($className, $fieldName, array $extraParameters = [])
     {
         $this[$fieldName] = function () use ($className) {
@@ -31,6 +37,11 @@ trait DiContainerTrait
         return $this->provideParameter($className, $extraParameters);
     }
 
+    /**
+     * @param string $className
+     * @param array $extraParameters
+     * @return $this
+     */
     public function provideParameter($className, array $extraParameters)
     {
         foreach ($extraParameters as $name => $value) {
