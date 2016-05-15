@@ -8,6 +8,11 @@
  */
 trait DiContainerTrait
 {
+    /**
+     * @param string $className
+     * @param array $extraParameters
+     * @return object of $className«
+     */
     public function produce($className, $extraParameters = [])
     {
         if (isset($this[$className])) {
