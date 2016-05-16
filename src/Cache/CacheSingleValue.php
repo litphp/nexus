@@ -25,7 +25,7 @@ class CacheSingleValue implements ISingleValue
      * CacheSlicedValue constructor.
      * @param CacheItemPoolInterface $cacheItemPool
      * @param string $key
-     * @param int|\DateInterval $expire
+     * @param int|\DateInterval|null $expire
      */
     public function __construct(CacheItemPoolInterface $cacheItemPool, $key, $expire)
     {

@@ -18,7 +18,7 @@ class CacheKeyValue implements IKeyValue
     /**
      * CacheKeyValue constructor.
      * @param CacheItemPoolInterface $cacheItemPool
-     * @param int|\DateInterval $expire
+     * @param int|\DateInterval|null $expire
      */
     public function __construct(CacheItemPoolInterface $cacheItemPool, $expire = null)
     {

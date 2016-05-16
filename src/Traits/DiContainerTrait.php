@@ -67,11 +67,11 @@ trait DiContainerTrait
     }
 
     /**
-     * @param $className
-     * @param $extraParameters
+     * @param string $className
+     * @param array $extraParameters
      * @return object
      */
-    public function instantiate($className, $extraParameters)
+    public function instantiate($className, array $extraParameters)
     {
         $class = new \ReflectionClass($className);
         $constructor = $class->getConstructor();
@@ -79,26 +79,7 @@ trait DiContainerTrait
         $constructParams = $constructor
             ? array_map(
                 function (\ReflectionParameter $parameter) use ($className, $extraParameters) {
-                    $parameterName = $parameter->name;
-                    if (isset($extraParameters[$parameterName])) {
-                        return $extraParameters[$parameterName];
-                    }
-
-                    try {
-                        $parameterClass = $parameter->getClass();
-                        if ($parameterClass && isset($extraParameters[$parameterClass->name])) {
-                            return $extraParameters[$parameterClass->name];
-                        }
-                    } catch (\ReflectionException $e) {
-                        //ignore exception when $parameter is type hinting for interface
-                    }
-
-                    $idx = $parameter->getPosition();
-                    if (isset($extraParameters[$idx])) {
-                        return $extraParameters[$idx];
-                    }
-
-                    return $this->produceParam($className, $parameter);
+                    return $this->produceParam($className, $parameter, $extraParameters);
                 },
                 $constructParams = $constructor->getParameters()
             )
@@ -115,31 +96,42 @@ trait DiContainerTrait
         };
     }
 
-    protected function produceParam($className, \ReflectionParameter $parameter)
+    protected function produceParam($className, \ReflectionParameter $parameter, array $extraParameters)
     {
         $paramName = $parameter->name;
+        if (isset($extraParameters[$paramName])) {
+            return $extraParameters[$paramName];
+        }
         if (isset($this["$className:$paramName"])) {
             return $this["$className:$paramName"];
         }
-
 
         try {
             $paramClass = $parameter->getClass();
             if (!empty($paramClass)) {
                 $paramClassName = $paramClass->name;
 
+                if (isset($extraParameters[$paramClassName])) {
+                    return $extraParameters[$paramClassName];
+                }
                 if (isset($this["$className:$paramClassName"])) {
                     return $this["$className:$paramClassName"];
                 }
-
-                return $this->produce($paramClassName);
             }
         } catch (\ReflectionException $e) {
+            //ignore exception when $parameter is type hinting for interface
         }
 
         $idx = $parameter->getPosition();
+        if (isset($extraParameters[$idx])) {
+            return $extraParameters[$idx];
+        }
         if (isset($this["$className:$idx"])) {
             return $this["$className:$idx"];
+        }
+
+        if (isset($paramClassName)) {
+            return $this->produce($paramClassName);
         }
 
         if ($parameter->isOptional()) {
