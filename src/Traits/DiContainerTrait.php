@@ -98,36 +98,26 @@ trait DiContainerTrait
 
     protected function produceParam($className, \ReflectionParameter $parameter, array $extraParameters)
     {
-        $paramName = $parameter->name;
-        if (isset($extraParameters[$paramName])) {
-            return $extraParameters[$paramName];
-        }
-        if (isset($this["$className:$paramName"])) {
-            return $this["$className:$paramName"];
-        }
+        $keys = [$parameter->name];
 
         try {
             $paramClass = $parameter->getClass();
             if (!empty($paramClass)) {
-                $paramClassName = $paramClass->name;
-
-                if (isset($extraParameters[$paramClassName])) {
-                    return $extraParameters[$paramClassName];
-                }
-                if (isset($this["$className:$paramClassName"])) {
-                    return $this["$className:$paramClassName"];
-                }
+                $keys[] = $paramClassName = $paramClass->name;
             }
         } catch (\ReflectionException $e) {
             //ignore exception when $parameter is type hinting for interface
         }
 
-        $idx = $parameter->getPosition();
-        if (isset($extraParameters[$idx])) {
-            return $extraParameters[$idx];
-        }
-        if (isset($this["$className:$idx"])) {
-            return $this["$className:$idx"];
+        $keys[] = $parameter->getPosition();
+
+        foreach ($keys as $key) {
+            if (isset($extraParameters[$key])) {
+                return $extraParameters[$key];
+            }
+            if (isset($this["$className:$key"])) {
+                return $this["$className:$key"];
+            }
         }
 
         if (isset($paramClassName)) {
