@@ -2,12 +2,17 @@
 
 /**
  * Class DiContainerTrait
+ *
+ * a pimple extension
+ *
  * @package Lit\Nexus\Traits
  *
  * @method protect($callable)
  */
 trait DiContainerTrait
 {
+    public static $diContainerPrefix = __CLASS__ . ':di:';
+
     /**
      * @param string $className
      * @param array $extraParameters
@@ -98,6 +103,35 @@ trait DiContainerTrait
 
     protected function produceParam($className, \ReflectionParameter $parameter, array $extraParameters)
     {
+        list($keys, $paramClassName) = $this->parseParameter($parameter);
+
+        foreach ($keys as $key) {
+            if (isset($extraParameters[$key])) {
+                return $this->populateParameter($extraParameters[$key]);
+            }
+            if (isset($this["$className:$key"])) {
+                return $this->populateParameter($this["$className:$key"]);
+            }
+        }
+
+        if (!empty($paramClassName)) {
+            return $this->produce($paramClassName);
+        }
+
+        if ($parameter->isOptional()) {
+            return $parameter->getDefaultValue();
+        }
+
+        throw new \RuntimeException(sprintf('failed to produce %s for %s', $parameter, $className));
+    }
+
+    /**
+     * @param \ReflectionParameter $parameter
+     * @return array
+     */
+    protected function parseParameter(\ReflectionParameter $parameter)
+    {
+        $paramClassName = null;
         $keys = [$parameter->name];
 
         try {
@@ -110,24 +144,22 @@ trait DiContainerTrait
         }
 
         $keys[] = $parameter->getPosition();
+        return [$keys, $paramClassName];
+    }
 
-        foreach ($keys as $key) {
-            if (isset($extraParameters[$key])) {
-                return $extraParameters[$key];
-            }
-            if (isset($this["$className:$key"])) {
-                return $this["$className:$key"];
-            }
+    protected function populateParameter($stub)
+    {
+        if (!method_exists($stub, '__invoke')) {
+            return $stub;
         }
 
-        if (isset($paramClassName)) {
-            return $this->produce($paramClassName);
+        $key = static::$diContainerPrefix . spl_object_hash($stub);
+        if (isset($this[$key])) {
+            return $this[$key];
         }
 
-        if ($parameter->isOptional()) {
-            return $parameter->getDefaultValue();
-        }
-
-        throw new \RuntimeException(sprintf('failed to produce %s for %s', $parameter, $className));
+        //so we respect user's ->protect / ->factory call
+        $this[$key] = $stub;
+        return $this[$key];
     }
 }
