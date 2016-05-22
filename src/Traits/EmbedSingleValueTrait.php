@@ -2,7 +2,7 @@
 
 use Lit\Nexus\Interfaces\ISingleValue;
 
-class EmbedSingleValueTrait
+trait EmbedSingleValueTrait
 {
     /**
      * @var ISingleValue

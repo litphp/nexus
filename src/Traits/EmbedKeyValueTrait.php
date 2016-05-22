@@ -2,7 +2,7 @@
 
 use Lit\Nexus\Interfaces\IKeyValue;
 
-class EmbedKeyValueTrait
+trait EmbedKeyValueTrait
 {
     /**
      * @var IKeyValue
