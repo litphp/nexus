@@ -149,7 +149,7 @@ trait DiContainerTrait
 
     protected function populateParameter($stub)
     {
-        if (!method_exists($stub, '__invoke')) {
+        if (!is_object($stub) || !method_exists($stub, '__invoke')) {
             return $stub;
         }
 
