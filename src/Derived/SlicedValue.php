@@ -20,7 +20,7 @@ class SlicedValue implements ISingleValue
      * @param IKeyValue $keyValue
      * @param string $key
      */
-    public function __construct($keyValue, $key)
+    public function __construct(IKeyValue $keyValue, $key)
     {
 
         $this->keyValue = $keyValue;
@@ -32,7 +32,7 @@ class SlicedValue implements ISingleValue
      * @param string $key
      * @return static
      */
-    public static function slice($keyValue, $key)
+    public static function slice(IKeyValue $keyValue, $key)
     {
         return new static($keyValue, $key);
     }
