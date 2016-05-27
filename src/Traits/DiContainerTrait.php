@@ -76,7 +76,7 @@ trait DiContainerTrait
      * @param array $extraParameters
      * @return object
      */
-    public function instantiate($className, array $extraParameters)
+    public function instantiate($className, array $extraParameters = [])
     {
         $class = new \ReflectionClass($className);
         $constructor = $class->getConstructor();
@@ -144,6 +144,7 @@ trait DiContainerTrait
         }
 
         $keys[] = $parameter->getPosition();
+
         return [$keys, $paramClassName];
     }
 

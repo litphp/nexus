@@ -3,6 +3,7 @@
 use Lit\Nexus\Interfaces\IKeyValue;
 use Lit\Nexus\Interfaces\ISingleValue;
 use Lit\Nexus\Traits\KeyValueTrait;
+use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
 
 class CacheKeyValue implements IKeyValue
@@ -16,6 +17,11 @@ class CacheKeyValue implements IKeyValue
     protected $expire;
 
     /**
+     * @var CacheItemInterface[]
+     */
+    protected $dirtyItems;
+
+    /**
      * CacheKeyValue constructor.
      * @param CacheItemPoolInterface $cacheItemPool
      * @param int|\DateInterval|null $expire
@@ -24,6 +30,7 @@ class CacheKeyValue implements IKeyValue
     {
         $this->cacheItemPool = $cacheItemPool;
         $this->expire = $expire;
+        $this->dirtyItems = new \SplObjectStorage();
     }
 
     public function set($key, $value)
@@ -33,6 +40,8 @@ class CacheKeyValue implements IKeyValue
         if (!empty($this->expire)) {
             $item->expiresAfter($this->expire);
         }
+
+        $this->dirtyItems->attach($item);
     }
 
     public function delete($key)
@@ -60,6 +69,14 @@ class CacheKeyValue implements IKeyValue
     public function sliceExpire($key, $expire)
     {
         return new CacheSingleValue($this->cacheItemPool, $key, $expire);
+    }
+
+    /**
+     * @return \Psr\Cache\CacheItemInterface[]
+     */
+    public function getDirtyItems()
+    {
+        return $this->dirtyItems;
     }
 
 }
