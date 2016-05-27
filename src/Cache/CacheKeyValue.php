@@ -17,7 +17,7 @@ class CacheKeyValue implements IKeyValue
     protected $expire;
 
     /**
-     * @var CacheItemInterface[]
+     * @var \SplObjectStorage|CacheItemInterface[]
      */
     protected $dirtyItems;
 
