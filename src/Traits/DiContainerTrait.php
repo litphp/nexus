@@ -11,7 +11,7 @@
  */
 trait DiContainerTrait
 {
-    public static $diContainerPrefix = __CLASS__ . ':di:';
+    public static $diContainerPrefix = __CLASS__;
 
     /**
      * @param string $className
@@ -161,7 +161,7 @@ trait DiContainerTrait
             return $stub;
         }
 
-        $key = static::$diContainerPrefix . spl_object_hash($stub);
+        $key = static::$diContainerPrefix . ':param:' . spl_object_hash($stub);
         if (isset($this[$key])) {
             return $this[$key];
         }
