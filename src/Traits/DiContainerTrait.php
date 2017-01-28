@@ -109,12 +109,19 @@ trait DiContainerTrait
             if (isset($extraParameters[$key])) {
                 return $this->populateParameter($extraParameters[$key]);
             }
+            if (isset($this["$className::"]) && isset($this["$className::"][$key])) {
+                return $this->populateParameter($this["$className::"][$key]);
+            }
             if (isset($this["$className:$key"])) {
                 return $this->populateParameter($this["$className:$key"]);
             }
         }
 
-        if (!empty($paramClassName)) {
+        if($paramClassName && isset($this[$paramClassName])) {
+            return $this[$paramClassName];
+        }
+
+        if (isset($paramClassName) && class_exists($paramClassName)) {
             return $this->produce($paramClassName);
         }
 
