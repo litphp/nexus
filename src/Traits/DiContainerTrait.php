@@ -139,23 +139,29 @@ trait DiContainerTrait
                 return $parameter->getDefaultValue();
             }
 
-            throw $e;
+            throw new DiException(
+                sprintf('failed to produce constructor parameter "%s" for %s', $parameter->getName(), $className),
+                DiException::CODE_DEPENDENCY_FAULT,
+                $e
+            );
         }
     }
 
     protected function produceDependency($className, array $keys, $dependencyClassName = null, array $extra = [])
     {
-        foreach ($keys as $key) {
-            if (isset($extra[$key])) {
-                return $this->populateDependency($extra[$key]);
+        do {
+            foreach ($keys as $key) {
+                if (isset($extra[$key])) {
+                    return $this->populateDependency($extra[$key]);
+                }
+                if (isset($this["$className::"]) && isset($this["$className::"][$key])) {
+                    return $this->populateDependency($this["$className::"][$key]);
+                }
+                if (isset($this["$className:$key"])) {
+                    return $this->populateDependency($this["$className:$key"]);
+                }
             }
-            if (isset($this["$className::"]) && isset($this["$className::"][$key])) {
-                return $this->populateDependency($this["$className::"][$key]);
-            }
-            if (isset($this["$className:$key"])) {
-                return $this->populateDependency($this["$className:$key"]);
-            }
-        }
+        } while ($className = get_parent_class($className));
 
         if($dependencyClassName && isset($this[$dependencyClassName])) {
             return $this[$dependencyClassName];
