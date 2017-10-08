@@ -2,10 +2,26 @@
 
 class SimpleTemplate
 {
-    public static function instance($templateCode)
-    {
-        return new static($templateCode);
-    }
+    protected $tag_re = '#`([^`\r\n]+)(?:[\r\n`])#';
+    protected $pre = [
+        '<?' => '!!TPL_PHP!!',
+        '``' => '!!TPL_ACUTE!!',
+    ];
+    protected $post = [
+        '!!TPL_PHP!!' => '<?',
+        '!!TPL_ACUTE!!' => '`',
+    ];
+    protected $rule = array(
+        'if' => '<?php if(%0):?>',
+        'else' => '<?php else:?>',
+        'elif' => '<?php elseif (%0):?>',
+        '/if' => '<?php endif;?>',
+        'loop' => '<?php if(is_array(%1)||%1 instanceof Traversable)foreach(%1 as %2 => %3):?>',
+        '/loop' => '<?php endforeach;?>',
+        'php' => "<?php %0",
+        '/php' => '?>',
+    );
+    protected $code = null;
 
     /**
      * @param $templateCode
@@ -13,6 +29,11 @@ class SimpleTemplate
     protected function __construct($templateCode)
     {
         $this->code = $templateCode;
+    }
+
+    public static function instance($templateCode)
+    {
+        return new static($templateCode);
     }
 
     public function render($data)
@@ -34,14 +55,9 @@ class SimpleTemplate
         return $templateCode;
     }
 
-    protected function resolve($match)
+    protected static function parseShortTag($initial, $statement)
     {
-        list(, $statement) = $match;
-
-        $param = preg_replace('#^\S+\s*#', '', $statement);
-        $params = preg_split('#\s+#', $statement);
-        $tag = array_shift($params);
-        switch ($tag{0}) {
+        switch ($initial) {
             case '#':
                 return null;
             case '$':
@@ -49,11 +65,11 @@ class SimpleTemplate
                 $statement = array_shift($arr);
                 while ($func = array_shift($arr)) {
                     $func = explode(' ', trim($func));
-                    if (count($func) == 1)// `$text|trim`
-                    {
+                    if (count($func) == 1) {
+                        // `$text|trim`
                         $statement = "{$func[0]}($statement)";
-                    } else//`$timestamp|date 'Y-m-d'`  OR `$text|substr #,0,4`
-                    {
+                    } else {
+                        //`$timestamp|date 'Y-m-d'`  OR `$text|substr #,0,4`
                         $funcname = array_shift($func);
                         $args = implode(' ', $func);
                         if (false === strpos($args, '#')) {
@@ -70,7 +86,24 @@ class SimpleTemplate
             case '~':
                 $t = substr($statement, 1);
                 return "<?php $t?>\n";
+            default:
+                return false;
         }
+    }
+
+    protected function resolve($match)
+    {
+        list(, $statement) = $match;
+
+        $param = preg_replace('#^\S+\s*#', '', $statement);
+        $params = preg_split('#\s+#', $statement);
+        $tag = array_shift($params);
+
+        $result = self::parseShortTag($tag{0}, $statement);
+        if ($result !== false) {
+            return $result;
+        }
+
         foreach ($this->rule as $t => $rule) {
             if ($t == $tag) {
                 $rule = str_replace('%0', $param, $rule);
@@ -80,32 +113,11 @@ class SimpleTemplate
                         $rule = str_replace('%' . ++$k, $p, $rule);
                     }
                 }
-                //PHP会吃换行，这里补上
+
                 return $rule . "\n";
             }
         }
 
         throw new \Exception('unimplemented');
     }
-
-    protected $tag_re = '#`([^`\r\n]+)(?:[\r\n`])#';
-    protected $pre = [
-        '<?' => '!!TPL_PHP!!',
-        '``' => '!!TPL_ACUTE!!',
-    ];
-    protected $post = [
-        '!!TPL_PHP!!' => '<?',
-        '!!TPL_ACUTE!!' => '`',
-    ];
-    protected $rule = array(
-        'if' => '<?php if(%0):?>',
-        'else' => '<?php else:?>',
-        'elif' => '<?php elseif (%0):?>',
-        '/if' => '<?php endif;?>',
-        'loop' => '<?php if(is_array(%1)||%1 instanceof Traversable)foreach(%1 as %2 => %3):?>',
-        '/loop' => '<?php endforeach;?>',
-        'php' => "<?php %0",
-        '/php' => '?>',
-    );
-    protected $code = null;
 }
