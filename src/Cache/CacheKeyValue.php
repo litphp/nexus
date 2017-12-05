@@ -1,11 +1,11 @@
 <?php namespace Lit\Nexus\Cache;
 
-use Lit\Nexus\Interfaces\IKeyValue;
-use Lit\Nexus\Interfaces\ISingleValue;
+use Lit\Nexus\Interfaces\KeyValueInterface;
+use Lit\Nexus\Interfaces\SingleValueInterface;
 use Lit\Nexus\Traits\KeyValueTrait;
 use Psr\Cache\CacheItemPoolInterface;
 
-class CacheKeyValue implements IKeyValue
+class CacheKeyValue implements KeyValueInterface
 {
     use KeyValueTrait;
     /**
@@ -57,7 +57,7 @@ class CacheKeyValue implements IKeyValue
      *
      * @param $key
      * @param int|\DateInterval $expire
-     * @return ISingleValue
+     * @return SingleValueInterface
      */
     public function sliceExpire($key, $expire)
     {

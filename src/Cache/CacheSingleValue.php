@@ -1,10 +1,10 @@
 <?php namespace Lit\Nexus\Cache;
 
-use Lit\Nexus\Interfaces\ISingleValue;
+use Lit\Nexus\Interfaces\SingleValueInterface;
 use Lit\Nexus\Traits\SingleValueTrait;
 use Psr\Cache\CacheItemPoolInterface;
 
-class CacheSingleValue implements ISingleValue
+class CacheSingleValue implements SingleValueInterface
 {
     use SingleValueTrait;
     /**

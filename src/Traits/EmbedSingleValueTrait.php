@@ -1,11 +1,11 @@
 <?php namespace Lit\Nexus\Traits;
 
-use Lit\Nexus\Interfaces\ISingleValue;
+use Lit\Nexus\Interfaces\SingleValueInterface;
 
 trait EmbedSingleValueTrait
 {
     /**
-     * @var ISingleValue
+     * @var SingleValueInterface
      */
     protected $innerSingleValue;
 
@@ -30,7 +30,7 @@ trait EmbedSingleValueTrait
     }
 
     /**
-     * @return ISingleValue
+     * @return SingleValueInterface
      */
     public function getInnerSingleValue()
     {

@@ -1,9 +1,9 @@
 <?php namespace Lit\Nexus\Derived;
 
-use Lit\Nexus\Interfaces\IKeyValue;
+use Lit\Nexus\Interfaces\KeyValueInterface;
 use Lit\Nexus\Traits\KeyValueTrait;
 
-class OffsetKeyValue implements IKeyValue, \ArrayAccess
+class OffsetKeyValue implements KeyValueInterface, \ArrayAccess
 {
     use KeyValueTrait;
 

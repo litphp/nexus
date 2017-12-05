@@ -1,28 +1,28 @@
 <?php namespace Lit\Nexus\Derived;
 
-use Lit\Nexus\Interfaces\IKeyValue;
-use Lit\Nexus\Interfaces\IReadableKeyValue;
+use Lit\Nexus\Interfaces\KeyValueInterface;
+use Lit\Nexus\Interfaces\ReadableKeyValueInterface;
 use Lit\Nexus\Traits\KeyValueTrait;
 
-class FrozenKeyValue implements IReadableKeyValue
+class FrozenKeyValue implements ReadableKeyValueInterface
 {
     use KeyValueTrait;
 
     /**
-     * @var IKeyValue
+     * @var KeyValueInterface
      */
     protected $keyValue;
 
-    protected function __construct(IKeyValue $keyValue)
+    protected function __construct(KeyValueInterface $keyValue)
     {
         $this->keyValue = $keyValue;
     }
 
     /**
-     * @param IKeyValue $keyValue
+     * @param KeyValueInterface $keyValue
      * @return static
      */
-    public static function wrap(IKeyValue $keyValue)
+    public static function wrap(KeyValueInterface $keyValue)
     {
         if ($keyValue instanceof static) {
             return $keyValue;

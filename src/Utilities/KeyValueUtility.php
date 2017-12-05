@@ -1,15 +1,15 @@
 <?php namespace Lit\Nexus\Utilities;
 
-use Lit\Nexus\Interfaces\ISingleValue;
+use Lit\Nexus\Interfaces\SingleValueInterface;
 
 class KeyValueUtility
 {
     /**
-     * @param ISingleValue $store
+     * @param SingleValueInterface $store
      * @param callable $compute
      * @return mixed
      */
-    public static function getOrSet(ISingleValue $store, callable $compute)
+    public static function getOrSet(SingleValueInterface $store, callable $compute)
     {
         if ($store->exists()) {
             return $store->get();

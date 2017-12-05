@@ -1,8 +1,8 @@
 <?php namespace Lit\Nexus\Derived;
 
-use Lit\Nexus\Interfaces\IKeyValue;
+use Lit\Nexus\Interfaces\KeyValueInterface;
 
-class ObjectKeyValue implements IKeyValue
+class ObjectKeyValue implements KeyValueInterface
 {
     /**
      * @var object

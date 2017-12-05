@@ -1,6 +1,6 @@
 <?php namespace Lit\Nexus\Void;
 
-use Lit\Nexus\Interfaces\IKeyValue;
+use Lit\Nexus\Interfaces\KeyValueInterface;
 use Lit\Nexus\Traits\KeyValueTrait;
 
 /**
@@ -8,7 +8,7 @@ use Lit\Nexus\Traits\KeyValueTrait;
  * @package Lit\Nexus\Void
  * @SuppressWarnings(PHPMD)
  */
-class VoidKeyValue implements IKeyValue
+class VoidKeyValue implements KeyValueInterface
 {
     use KeyValueTrait;
 

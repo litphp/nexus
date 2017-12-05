@@ -1,14 +1,14 @@
 <?php namespace Lit\Nexus\Derived;
 
-use Lit\Nexus\Interfaces\IKeyValue;
-use Lit\Nexus\Interfaces\ISingleValue;
+use Lit\Nexus\Interfaces\KeyValueInterface;
+use Lit\Nexus\Interfaces\SingleValueInterface;
 use Lit\Nexus\Traits\SingleValueTrait;
 
-class SlicedValue implements ISingleValue
+class SlicedValue implements SingleValueInterface
 {
     use SingleValueTrait;
     /**
-     * @var IKeyValue
+     * @var KeyValueInterface
      */
     private $keyValue;
     /**
@@ -17,10 +17,10 @@ class SlicedValue implements ISingleValue
     private $key;
 
     /**
-     * @param IKeyValue $keyValue
+     * @param KeyValueInterface $keyValue
      * @param string $key
      */
-    public function __construct(IKeyValue $keyValue, $key)
+    public function __construct(KeyValueInterface $keyValue, $key)
     {
 
         $this->keyValue = $keyValue;
@@ -28,11 +28,11 @@ class SlicedValue implements ISingleValue
     }
 
     /**
-     * @param IKeyValue $keyValue
+     * @param KeyValueInterface $keyValue
      * @param string $key
      * @return static
      */
-    public static function slice(IKeyValue $keyValue, $key)
+    public static function slice(KeyValueInterface $keyValue, $key)
     {
         return new static($keyValue, $key);
     }

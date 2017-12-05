@@ -1,25 +1,25 @@
 <?php namespace Lit\Nexus\Derived;
 
-use Lit\Nexus\Interfaces\IReadableSingleValue;
-use Lit\Nexus\Interfaces\ISingleValue;
+use Lit\Nexus\Interfaces\ReadableSingleValueInterface;
+use Lit\Nexus\Interfaces\SingleValueInterface;
 
-class FrozenValue implements IReadableSingleValue
+class FrozenValue implements ReadableSingleValueInterface
 {
     /**
-     * @var ISingleValue
+     * @var SingleValueInterface
      */
     protected $value;
 
-    protected function __construct(ISingleValue $value)
+    protected function __construct(SingleValueInterface $value)
     {
         $this->value = $value;
     }
 
     /**
-     * @param ISingleValue $value
+     * @param SingleValueInterface $value
      * @return static
      */
-    public static function wrap(ISingleValue $value)
+    public static function wrap(SingleValueInterface $value)
     {
         if ($value instanceof static) {
             return $value;

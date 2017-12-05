@@ -1,11 +1,11 @@
 <?php namespace Lit\Nexus\Traits;
 
-use Lit\Nexus\Interfaces\IKeyValue;
+use Lit\Nexus\Interfaces\KeyValueInterface;
 
 trait EmbedKeyValueTrait
 {
     /**
-     * @var IKeyValue
+     * @var KeyValueInterface
      */
     protected $innerKeyValue;
 

@@ -1,6 +1,6 @@
 <?php namespace Lit\Nexus\Void;
 
-use Lit\Nexus\Interfaces\ISingleValue;
+use Lit\Nexus\Interfaces\SingleValueInterface;
 use Lit\Nexus\Traits\SingleValueTrait;
 
 /**
@@ -8,7 +8,7 @@ use Lit\Nexus\Traits\SingleValueTrait;
  * @package Lit\Nexus\Void
  * @SuppressWarnings(PHPMD)
  */
-class VoidSingleValue implements ISingleValue
+class VoidSingleValue implements SingleValueInterface
 {
     use SingleValueTrait;
 

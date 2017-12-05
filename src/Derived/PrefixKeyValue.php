@@ -1,14 +1,14 @@
 <?php namespace Lit\Nexus\Derived;
 
-use Lit\Nexus\Interfaces\IKeyValue;
+use Lit\Nexus\Interfaces\KeyValueInterface;
 use Lit\Nexus\Traits\KeyValueTrait;
 
-class PrefixKeyValue implements IKeyValue
+class PrefixKeyValue implements KeyValueInterface
 {
     use KeyValueTrait;
 
     /**
-     * @var IKeyValue
+     * @var KeyValueInterface
      */
     protected $store;
     /**
@@ -16,7 +16,7 @@ class PrefixKeyValue implements IKeyValue
      */
     protected $prefix;
 
-    protected function __construct(IKeyValue $store, $prefix)
+    protected function __construct(KeyValueInterface $store, $prefix)
     {
         if (empty($prefix)) {
             throw new \InvalidArgumentException;
@@ -26,7 +26,7 @@ class PrefixKeyValue implements IKeyValue
         $this->prefix = $prefix;
     }
 
-    public static function wrap(IKeyValue $store, $prefix)
+    public static function wrap(KeyValueInterface $store, $prefix)
     {
         return new self($store, $prefix);
     }

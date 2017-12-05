@@ -3,7 +3,7 @@
 use Lit\Nexus\Derived\FrozenKeyValue;
 use Lit\Nexus\Derived\PrefixKeyValue;
 use Lit\Nexus\Derived\SlicedValue;
-use Lit\Nexus\Interfaces\IKeyValue;
+use Lit\Nexus\Interfaces\KeyValueInterface;
 
 trait KeyValueTrait
 {
@@ -13,7 +13,7 @@ trait KeyValueTrait
     public function freeze()
     {
         /**
-         * @var IKeyValue $this
+         * @var KeyValueInterface $this
          */
         return FrozenKeyValue::wrap($this);
     }
@@ -25,7 +25,7 @@ trait KeyValueTrait
     public function slice($key)
     {
         /**
-         * @var IKeyValue $this
+         * @var KeyValueInterface $this
          */
         return SlicedValue::slice($this, $key);
     }
@@ -37,7 +37,7 @@ trait KeyValueTrait
     public function prefix($prefix)
     {
         /**
-         * @var IKeyValue|self $this
+         * @var KeyValueInterface|self $this
          */
         return PrefixKeyValue::wrap($this, $prefix . $this->getPrefixDelimiter());
     }
