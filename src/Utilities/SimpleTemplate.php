@@ -8,7 +8,7 @@ class SimpleTemplate
         '``' => '!!TPL_ACUTE!!',
     ];
     protected $post = [
-        '!!TPL_PHP!!' => '<?',
+        '!!TPL_PHP!!' => '<?=\'<\'?>?',
         '!!TPL_ACUTE!!' => '`',
     ];
     protected $rule = array(
@@ -22,6 +22,7 @@ class SimpleTemplate
         '/php' => '?>',
     );
     protected $code = null;
+    protected $compiledCode;
 
     /**
      * @param $templateCode
@@ -46,13 +47,17 @@ class SimpleTemplate
 
     public function compile()
     {
-        $templateCode = $this->code;
+        if(!isset($this->compiledCode)) {
+            $templateCode = $this->code;
 
-        $templateCode = strtr($templateCode, $this->pre);
-        $templateCode = preg_replace_callback($this->tag_re, [$this, 'resolve'], $templateCode);
-        $templateCode = strtr($templateCode, $this->post);
+            $templateCode = strtr($templateCode, $this->pre);
+            $templateCode = preg_replace_callback($this->tag_re, [$this, 'resolve'], $templateCode);
+            $templateCode = strtr($templateCode, $this->post);
 
-        return $templateCode;
+            $this->compiledCode = $templateCode;
+        }
+
+        return $this->compiledCode;
     }
 
     protected static function parseShortTag($initial, $statement)
