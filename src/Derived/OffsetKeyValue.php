@@ -3,7 +3,7 @@
 use Lit\Nexus\Interfaces\KeyValueInterface;
 use Lit\Nexus\Traits\KeyValueTrait;
 
-class OffsetKeyValue implements KeyValueInterface, \ArrayAccess
+class OffsetKeyValue implements KeyValueInterface
 {
     use KeyValueTrait;
 
@@ -29,39 +29,6 @@ class OffsetKeyValue implements KeyValueInterface, \ArrayAccess
         }
 
         throw new \InvalidArgumentException;
-    }
-
-
-    /**
-     * @inheritdoc
-     */
-    public function offsetExists($offset)
-    {
-        return isset($this->content[$offset]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function offsetGet($offset)
-    {
-        return $this->content[$offset];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function offsetSet($offset, $value)
-    {
-        $this->content[$offset] = $value;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function offsetUnset($offset)
-    {
-        unset($this->content[$offset]);
     }
 
     /**
