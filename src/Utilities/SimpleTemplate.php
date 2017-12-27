@@ -5,11 +5,9 @@ class SimpleTemplate
     protected $tag_re = '#`([^`\r\n]+)(?:[\r\n`])#';
     protected $pre = [
         '<?' => '!!TPL_PHP!!',
-        '``' => '!!TPL_ACUTE!!',
     ];
     protected $post = [
         '!!TPL_PHP!!' => '<?=\'<\'?>?',
-        '!!TPL_ACUTE!!' => '`',
     ];
     protected $rule = array(
         'if' => '<?php if(%0):?>',
