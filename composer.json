@@ -10,8 +10,11 @@
     ],
     "autoload": {
         "psr-4": {
-            "Lit\\Nexus\\": "src"
-        }
+            "Lit\\Nexus\\": ""
+        },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
     },
     "require": {
     },
